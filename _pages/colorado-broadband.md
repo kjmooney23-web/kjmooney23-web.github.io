@@ -11,7 +11,13 @@ toc_icon: "chart-bar"
 
 ## 1. Background & Overview
 
-*✏️ Write your own overview here — describe what the project is, why you did it, and what problem it solves.*
+*Colorado's broadband market is evolving fast. With fiber providers aggressively expanding into cable-dominated territories, the competitive dynamics are shifting in ways that create real risk for incumbents — and real opportunity for those paying attention.
+
+I designed this project to get a clear picture of what's actually happening in the market. My goals were straightforward: understand the industry landscape, map the competitive dynamics between Cable and Fiber providers, assess where meaningful expansion opportunities exist across the state, and quantify the churn and penetration risks that come with increased competition.
+
+To do that, I worked with two datasets — FCC Broadband availability data covering over 2.7 million locations across Colorado, and the IBM Telco Customer Churn dataset to model retention risk behaviors. I used SQL to structure, clean, and analyze the data, and built a four-dashboard Tableau story to communicate the findings visually.
+
+The result is an end-to-end market analysis that goes beyond coverage maps — connecting infrastructure data to customer behavior to tell a more complete competitive story.*
 
 ---
 
