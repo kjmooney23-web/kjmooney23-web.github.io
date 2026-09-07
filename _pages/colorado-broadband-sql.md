@@ -4,8 +4,6 @@ title: "Colorado Broadband — SQL Queries"
 permalink: /colorado-broadband-sql/
 ---
 
-# Colorado Broadband Analysis — SQL Queries
-
 All queries run against a MySQL database named `fiber_analytics`.
 Source tables: `fcc_co_fiber`, `fcc_co_cable`, `telco_churn`.
 
