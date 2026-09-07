@@ -1,31 +1,19 @@
 title: "Kristin Mooney"
 subtitle: "Senior Data Analyst | SQL • Tableau • Power BI"
-name: "Kristin Mooney"
 description: "Senior Data Analyst portfolio — SQL, Tableau, Power BI"
 url: "https://kjmooney23-web.github.io"
 
-remote_theme: mmistakes/minimal-mistakes
-minimal_mistakes_skin: "dark"
+theme: minima
 
-plugins:
-  - jekyll-remote-theme
-  - jekyll-feed
+minima:
+  skin: dark
 
 author:
   name: "Kristin Mooney"
   bio: "Senior Data Analyst passionate about turning complex data into clear, actionable stories."
-  links:
-    - label: "LinkedIn"
-      icon: "fab fa-fw fa-linkedin"
-      url: "https://www.linkedin.com/in/kristinmooney"
-    - label: "GitHub"
-      icon: "fab fa-fw fa-github"
-      url: "https://github.com/kjmooney23-web"
 
-defaults:
-  - scope:
-      path: ""
-      type: pages
-    values:
-      layout: single
-      author_profile: true
+header_pages:
+  - index.md
+
+plugins:
+  - jekyll-feed
