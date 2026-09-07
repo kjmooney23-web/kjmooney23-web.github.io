@@ -334,7 +334,7 @@ time periods, and provider types.
 
 ## 7. SQL Queries
 
-All SQL queries used in this project are available on GitHub, organized by dashboard.
-Each file includes the full query and a brief description of its purpose.
+All SQL queries used in this project are available on a dedicated page, organized by dashboard.
+Each query includes a brief description of its purpose.
 
-[View SQL Queries →](kjmooney23-web.github.io/colorado-broadband-sql/){: .btn .btn--info .btn--large}
+[View SQL Queries →](/colorado-broadband-sql/){: .btn .btn--info .btn--large}
