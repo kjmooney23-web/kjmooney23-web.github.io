@@ -129,13 +129,94 @@ The IBM Telco Customer Churn dataset was loaded as a single flat table. A single
 
 ## 3. Executive Summary
 
-*✏️ Summarize your key findings and the 4 dashboards you built.*
+Colorado's broadband market is at an inflection point. Cable incumbents still hold the majority of
+the market — 59% of 2.78M locations — but Fiber is rapidly closing the gap, backed by 82 competing
+providers and speed capabilities that are categorically superior. The average Fiber upload speed in
+Colorado is 3,588 Mbps, compared to just 283 Mbps for Cable — a 13x difference that is becoming
+increasingly difficult for Cable providers to ignore as customer expectations rise.
+
+The competitive landscape reveals a structural vulnerability for the market's biggest players.
+Xfinity and Quantum Fiber dominate by volume, but both offer significantly slower upload speeds
+than smaller, more agile competitors. This performance gap — where scale and speed are inversely
+correlated — creates a clear opening for providers willing to compete on quality over footprint.
+
+Geographically, eight counties have been identified as priority expansion targets for Fiber entry.
+Adams and Douglas alone account for over 135,000 cable-only locations, while Summit, Garfield,
+and Pitkin counties — home to some of Colorado's most prominent ski communities — are being
+served by Cable upload speeds below 100 Mbps. The western slope of Colorado remains broadly
+underserved, with cable-only coverage dominating across the region.
+
+On the retention side, Fiber's 41.89% churn rate — more than double Cable's 18.96% — is the
+project's most urgent finding. However, the data points to two highly actionable levers:
+contract structure and payment behavior. Ninety percent of churned Fiber customers are on
+month-to-month contracts, and customers paying by automated methods churn at significantly
+lower rates than those using electronic or mailed checks. The churn problem is real, but it
+is not intractable.
+
 
 ---
 
 ## 4. Insights Deep Dive
 
-*✏️ Walk through your most important analytical findings here.*
+---
+
+### Dashboard 1 — Colorado's Broadband Landscape
+
+> **Key Finding:** Cable incumbents still own the majority of the market, but Fiber has a
+significant speed advantage and far more competitors entering the space.
+
+Cable currently holds 59% of Colorado's 2.78M broadband locations (1.64M) versus Fiber's 41%
+(1.13M). Despite that market share gap, Fiber is competing on a fundamentally different
+performance tier — with average upload speeds of 3,588 Mbps compared to Cable's 283 Mbps,
+making Fiber upload speeds **13x faster** than Cable. The competitive field tells a similar
+story: there are 82 distinct Fiber providers operating in Colorado versus only 10 Cable
+providers, signaling that Fiber is already a crowded and aggressive growth market.
+
+---
+
+### Dashboard 2 — Competitive Battleground
+
+> **Key Finding:** The biggest players are also the slowest — creating a performance gap
+that smaller, faster providers can exploit.
+
+Xfinity dominates Cable with 1.44M locations served, while Quantum Fiber leads the Fiber
+segment with 548K locations. However, scale comes at a cost: the largest providers are
+offering significantly slower upload speeds than their smaller competitors. Xfinity's average
+upload speed sits around 531 Mbps, while smaller Fiber players like Force Broadband and BAM
+Broadband deliver speeds of 6,000–10,000 Mbps. The majority of competitors cluster in the
+Average upload speed tier (1,000–2,500 Mbps), leaving a clear performance gap at the top
+of the market for differentiated providers to fill.
+
+---
+
+### Dashboard 3 — Expansion Strategy in CO
+
+> **Key Finding:** Eight counties present immediate fiber expansion opportunities, with
+Adams and Douglas alone representing over 135K underserved cable-only locations.
+
+Adams and Douglas counties each have more than 67,000 cable-only locations — the largest
+concentrations of locations currently served by Cable with no Fiber alternative. Beyond
+volume, service quality adds urgency: in Summit, Garfield, and Pitkin counties — some of
+Colorado's premier ski communities — cable upload speeds fall below 100 Mbps, with Summit
+County's Xfinity service averaging just 38 Mbps. The western slope of Colorado is broadly
+dominated by Cable, making it a structurally underserved region ripe for Fiber entry.
+
+---
+
+### Dashboard 4 — Retention & Risk Strategy
+
+> **Key Finding:** Fiber has a churn problem — and it's largely driven by contract
+flexibility and payment behavior, both of which are actionable.
+
+Fiber customers churn at a rate of **41.89%**, more than double Cable's 18.96%. Fiber
+customers are also paying significantly more — an average of $93.39 per month versus $58.38
+for Cable — making churn an expensive problem. The data points to two clear levers:
+**contract length** and **payment method**. Of Fiber customers who churn, 90% are on
+month-to-month contracts, compared to just 2% on two-year contracts. On payment method,
+customers using automated payments (bank transfer or credit card) churn at significantly
+lower rates than those paying by electronic or mailed check — with electronic check Fiber
+churn reaching as high as 53%.
+
 
 ---
 
