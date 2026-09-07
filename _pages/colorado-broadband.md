@@ -9,7 +9,11 @@ toc_label: "Project Sections"
 toc_icon: "chart-bar"
 ---
 
+---
+
 ## 1. Background & Overview
+
+---
 
 Colorado's broadband market is evolving fast. With fiber providers aggressively expanding into cable-dominated territories, the competitive dynamics are shifting in ways that create real risk for incumbents — and real opportunity for the fiber players.
 
@@ -22,6 +26,8 @@ The result is an end-to-end market analysis that goes beyond coverage maps — c
 ---
 
 ## 2. Executive Summary
+
+---
 
 Colorado's broadband market is at an inflection point. Cable incumbents still hold the majority of
 the market — 59% of 2.78M locations — but Fiber is rapidly closing the gap, backed by 82 competing
@@ -84,6 +90,7 @@ of the market for differentiated providers to fill.
 
 ### Dashboard 3 — Expansion Strategy in CO
 
+
 > **Key Finding:** Eight counties present immediate fiber expansion opportunities, with
 Adams and Douglas alone representing over 135K underserved cable-only locations.
 
@@ -112,6 +119,7 @@ churn reaching as high as 53%.
 
 
 ---
+
 ## 4. Recommendations
 
 ---
@@ -227,6 +235,8 @@ time periods, and provider types.
 
 ## 6. Data Structure Overview
 
+---
+
 This project draws on two primary data sources: FCC Broadband Availability data (December 2025), which provides location-level infrastructure and provider information across Colorado, and the IBM Telco Customer Churn dataset (Kaggle, 2018), which supplies behavioral and demographic data used to model churn and retention risk. All data was structured and queried using SQL within a `fiber_analytics` MySQL database before being connected to Tableau for visualization.
 
 The FCC data powers the first three dashboards; the IBM Telco dataset powers the fourth.
@@ -332,6 +342,8 @@ The IBM Telco Customer Churn dataset was loaded as a single flat table. A single
 ---
 
 ## 7. SQL Queries
+
+---
 
 All SQL queries used in this project are available on a dedicated page, organized by dashboard.
 Each query includes a brief description of its purpose.
