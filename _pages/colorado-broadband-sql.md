@@ -111,8 +111,10 @@ SELECT
     ROUND(AVG(max_advertised_upload_speed), 0)                   AS avg_upload_mbps
 FROM fcc_co_cable
 WHERE SUBSTRING(block_geoid, 3, 3) IN ('001','014','035','037','043','045','097','117')
-GROUP BY county_fips, brand_name
-ORDER BY county_fips, locations_served DESC;
+GROUP BY county_fips,
+brand_name
+ORDER BY county_fips,
+locations_served DESC;
 ```
 
 ### county_competition
@@ -209,6 +211,12 @@ SELECT
     ROUND(SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END)
           * AVG(MonthlyCharges), 0)                                 AS est_monthly_revenue_lost
 FROM telco_churn
-GROUP BY InternetService, tenure, gender, partner, contract, paymentmethod, churn
+GROUP BY InternetService,
+tenure,
+gender,
+partner,
+contract,
+paymentmethod,
+churn
 ORDER BY churn_rate_pct DESC;
 ```
