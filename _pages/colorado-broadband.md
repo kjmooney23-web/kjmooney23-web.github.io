@@ -219,204 +219,122 @@ churn reaching as high as 53%.
 
 
 ---
-
 ## 5. Recommendations
 
-*✏️ List your strategic recommendations based on the data.*
+---
+
+### 1. Prioritize Fiber Expansion in Adams and Douglas Counties
+With 67,800 and 67,444 cable-only locations respectively, Adams and Douglas represent the
+single largest untapped opportunity for Fiber entry in Colorado. Both counties are in the
+metro area with high population density, making infrastructure investment more efficient
+per location served. These should be the first targets for any expansion roadmap.
+
+---
+
+### 2. Target Underserved Ski Communities as a Premium Market
+Summit, Garfield, and Pitkin counties are being served by Cable upload speeds of 38, 49,
+and 89 Mbps respectively — far below what remote work and high-demand streaming require.
+These communities skew toward high-income households with both the willingness and ability
+to pay a premium for superior service. A quality-differentiated Fiber offering in these
+markets could command strong pricing power with relatively low competitive resistance.
+
+---
+
+### 3. Treat the Western Slope as a Strategic Long-Term Opportunity
+The western slope of Colorado is broadly dominated by Cable with minimal Fiber penetration.
+While infrastructure costs are higher in rural and mountainous terrain, the lack of
+competition means any Fiber provider entering this region could establish durable market
+leadership. A phased western slope strategy — starting with the most accessible
+population centers — would be worth modeling as a longer-term investment.
+
+---
+
+### 4. Compete on Upload Speed, Not Just Download Speed
+The data consistently shows that the biggest providers are the slowest on upload speeds.
+As remote work, video conferencing, and cloud-based workflows become standard, upload speed
+is increasingly the metric customers care about. A Fiber provider that leads with upload
+speed as a core differentiator — rather than competing on price — can occupy a distinct
+and defensible position in the market.
+
+---
+
+### 5. Incentivize Longer-Term Contracts to Reduce Fiber Churn
+Ninety percent of churned Fiber customers are on month-to-month contracts. Offering
+meaningful incentives to migrate customers to one- or two-year agreements — such as locked
+pricing, installation credits, or bundled services — could significantly reduce the 41.89%
+churn rate. Even shifting a portion of the month-to-month base to annual contracts would
+have a material impact on revenue retention.
+
+---
+
+### 6. Promote Automated Payment Enrollment as a Retention Tool
+Customers using automated payment methods (bank transfer or credit card) churn at
+significantly lower rates than those paying by electronic or mailed check. A proactive
+campaign to enroll customers in autopay at onboarding — paired with a small monthly
+discount as an incentive — is a low-cost, high-return retention lever that can be
+implemented immediately.
 
 ---
 
 ## 6. Caveats & Assumptions
 
-*✏️ Note any data limitations, assumptions made, or areas for future improvement.*
+---
+
+### Data Source Limitations
+
+**FCC Broadband Availability Data**
+The FCC dataset reflects *advertised* maximum speeds, not actual measured speeds experienced
+by customers. Providers are known to advertise theoretical peak performance, which may
+differ significantly from real-world conditions. Additionally, FCC availability data reports
+whether a provider *can* serve a location, not whether a customer is actively subscribed —
+meaning coverage and market share are not the same thing. Actual penetration rates within
+served areas are unknown.
+
+**IBM Telco Customer Churn Dataset**
+The churn dataset is sourced from a single telecommunications company's 2018 customer base
+and was not collected in Colorado. It is used here as a behavioral proxy to understand
+churn drivers across contract types and payment methods — not as a direct measurement of
+Colorado broadband churn. Churn rates and behavioral patterns may differ across geographies,
+time periods, and provider types.
+
+---
+
+### Analytical Assumptions
+
+- Technology codes `50` (Fiber FTTP) and `40` (Cable HFC) were used exclusively to define
+  Fiber and Cable, respectively. Other technology types (DSL, fixed wireless, satellite)
+  were excluded from the analysis to maintain a clean Cable vs. Fiber comparison.
+- The eight counties selected for the Expansion Strategy dashboard were chosen based on a
+  combination of cable-only location volume and incumbent upload speed performance.
+  Other counties may present viable opportunities not captured in this analysis.
+- The `expansion_priority` table uses manually curated county-level values derived from
+  the raw FCC data. These figures are point-in-time snapshots and may not reflect the
+  most current deployment status.
+
+---
+
+### Areas for Future Improvement
+
+- **Incorporate actual subscription data** alongside availability data to calculate true
+  penetration rates by county and provider.
+- **Add pricing data** to better model the relationship between monthly charges, contract
+  type, and churn risk in a Colorado-specific context.
+- **Expand geographic scope** of the churn analysis using a more recent and regionally
+  representative dataset.
+- **Layer in demographic and income data** by county to refine the expansion priority
+  scoring model and better assess willingness-to-pay in target markets.
+
+---
+
+## Interactive Dashboard
+
+[View Full Tableau Dashboard](https://public.tableau.com/app/profile/kristin.mooney/viz/TableauFiberAnalysis/ColoradosBroadbandOpportunity){: .btn .btn--primary .btn--large}
 
 ---
 
 ## 7. SQL Queries
 
-### tech_overview
-```sql
-#tech_overview
-USE fiber_analytics;
-
-SELECT
-    CASE technology WHEN 50 THEN 'Fiber (FTTP)' WHEN 40 THEN 'Cable (HFC)' END AS technology_type,
-    COUNT(DISTINCT provider_id)                                                  AS num_providers,
-    COUNT(DISTINCT location_id)                                                  AS locations_served,
-    ROUND(AVG(max_advertised_download_speed), 0)                                 AS avg_download_mbps,
-    ROUND(AVG(max_advertised_upload_speed), 0)                                   AS avg_upload_mbps
-FROM (
-    SELECT technology, provider_id, location_id, max_advertised_download_speed, max_advertised_upload_speed FROM fcc_co_fiber
-    UNION ALL
-    SELECT technology, provider_id, location_id, max_advertised_download_speed, max_advertised_upload_speed FROM fcc_co_cable
-) AS combined
-GROUP BY technology;
-
-### fiber_and_cable_competitors
-```sql
-USE fiber_analytics;
-
-SELECT
-'Fiber' as service,
-    brand_name,
-    COUNT(DISTINCT location_id)                  AS locations,
-    ROUND(AVG(max_advertised_download_speed), 0) AS avg_download_mbps,
-    ROUND(AVG(max_advertised_upload_speed), 0)   AS avg_upload_mbps
-FROM fcc_co_fiber
-GROUP BY brand_name
-union all
-SELECT
-	'Cable' as service,
-    brand_name,
-    COUNT(DISTINCT location_id)                                  AS locations,
-    ROUND(AVG(max_advertised_download_speed), 0)                 AS avg_download_mbps,
-    ROUND(AVG(max_advertised_upload_speed), 0)                   AS avg_upload_mbps
-FROM fcc_co_cable
-GROUP BY brand_name
-;
-
-### expansion_priority
-```sql
-USE fiber_analytics;
-
-SELECT
-    county_name,
-    county_fips,
-    cable_only_locations,
-    pct_cable_only,
-    xfinity_avg_upload_mbps
-FROM (
-    SELECT 'Adams'      AS county_name, '001' AS county_fips, 67800 AS cable_only_locations, 42.4 AS pct_cable_only, 531.0 AS xfinity_avg_upload_mbps
-    UNION ALL SELECT 'Douglas',         '035',                67444,                          57.3,                  150.0
-    UNION ALL SELECT 'Broomfield',      '014',                14199,                          63.3,                  191.0
-    UNION ALL SELECT 'Eagle',           '037',                15297,                          85.4,                  400.0
-    UNION ALL SELECT 'Summit',          '117',                14047,                          89.4,                   38.0
-    UNION ALL SELECT 'Garfield',        '045',                13230,                          78.1,                   49.0
-    UNION ALL SELECT 'Pitkin',          '097',                 7268,                          97.1,                   89.0
-    UNION ALL SELECT 'Fremont',         '043',                 9500,                          65.0,                 1000.0
-) AS county_data
-ORDER BY county_name asc;
-
-### cable_incumbents
-```sql
-USE fiber_analytics;
-
-SELECT
-    CASE SUBSTRING(block_geoid, 3, 3)
-        WHEN '001' THEN 'Adams'     WHEN '014' THEN 'Broomfield'
-        WHEN '035' THEN 'Douglas'   WHEN '037' THEN 'Eagle'
-        WHEN '043' THEN 'Fremont'   WHEN '045' THEN 'Garfield'
-        WHEN '097' THEN 'Pitkin'    WHEN '117' THEN 'Summit'
-    END                                                          AS county_name,
-    SUBSTRING(block_geoid, 3, 3)                                 AS county_fips,
-    brand_name                                                   AS cable_provider,
-    COUNT(DISTINCT location_id)                                  AS locations_served,
-    ROUND(AVG(max_advertised_download_speed), 0)                 AS avg_download_mbps,
-    ROUND(AVG(max_advertised_upload_speed), 0)                   AS avg_upload_mbps
-FROM fcc_co_cable
-WHERE SUBSTRING(block_geoid, 3, 3) IN ('001','014','035','037','043','045','097','117')
-GROUP BY county_fips, brand_name
-ORDER BY county_fips, locations_served DESC;
-
-### county_competition
-```sql
-USE fiber_analytics;
-
-SELECT
-    CASE SUBSTRING(block_geoid, 3, 3)
-        WHEN '001' THEN 'Adams'          WHEN '003' THEN 'Alamosa'
-        WHEN '005' THEN 'Arapahoe'       WHEN '007' THEN 'Archuleta'
-        WHEN '009' THEN 'Baca'           WHEN '011' THEN 'Bent'
-        WHEN '013' THEN 'Boulder'        WHEN '014' THEN 'Broomfield'
-        WHEN '015' THEN 'Chaffee'        WHEN '017' THEN 'Cheyenne'
-        WHEN '019' THEN 'Clear Creek'    WHEN '021' THEN 'Conejos'
-        WHEN '023' THEN 'Costilla'       WHEN '025' THEN 'Crowley'
-        WHEN '027' THEN 'Custer'         WHEN '029' THEN 'Delta'
-        WHEN '031' THEN 'Denver'         WHEN '033' THEN 'Dolores'
-        WHEN '035' THEN 'Douglas'        WHEN '037' THEN 'Eagle'
-        WHEN '039' THEN 'Elbert'         WHEN '041' THEN 'El Paso'
-        WHEN '043' THEN 'Fremont'        WHEN '045' THEN 'Garfield'
-        WHEN '047' THEN 'Gilpin'         WHEN '049' THEN 'Grand'
-        WHEN '051' THEN 'Gunnison'       WHEN '053' THEN 'Hinsdale'
-        WHEN '055' THEN 'Huerfano'       WHEN '057' THEN 'Jackson'
-        WHEN '059' THEN 'Jefferson'      WHEN '061' THEN 'Kiowa'
-        WHEN '063' THEN 'Kit Carson'     WHEN '065' THEN 'Lake'
-        WHEN '067' THEN 'La Plata'       WHEN '069' THEN 'Larimer'
-        WHEN '071' THEN 'Las Animas'     WHEN '073' THEN 'Lincoln'
-        WHEN '075' THEN 'Logan'          WHEN '077' THEN 'Mesa'
-        WHEN '079' THEN 'Mineral'        WHEN '081' THEN 'Moffat'
-        WHEN '083' THEN 'Montezuma'      WHEN '085' THEN 'Montrose'
-        WHEN '087' THEN 'Morgan'         WHEN '089' THEN 'Otero'
-        WHEN '091' THEN 'Ouray'          WHEN '093' THEN 'Park'
-        WHEN '095' THEN 'Phillips'       WHEN '097' THEN 'Pitkin'
-        WHEN '099' THEN 'Prowers'        WHEN '101' THEN 'Pueblo'
-        WHEN '103' THEN 'Rio Blanco'     WHEN '105' THEN 'Rio Grande'
-        WHEN '107' THEN 'Routt'          WHEN '109' THEN 'Saguache'
-        WHEN '111' THEN 'San Juan'       WHEN '113' THEN 'San Miguel'
-        WHEN '115' THEN 'Sedgwick'       WHEN '117' THEN 'Summit'
-        WHEN '119' THEN 'Teller'         WHEN '121' THEN 'Washington'
-        WHEN '123' THEN 'Weld'           WHEN '125' THEN 'Yuma'
-        ELSE 'Other'
-    END                                                                              AS county_name,
-    SUBSTRING(block_geoid, 3, 3)                                                     AS county_fips,
-    'Colorado'                                                                       AS state,
-    COUNT(*)                                                                         AS total_locations,
-    SUM(CASE WHEN has_fiber = 1 AND has_cable = 1 THEN 1 ELSE 0 END)               AS fiber_and_cable,
-    SUM(CASE WHEN has_fiber = 1 AND has_cable = 0 THEN 1 ELSE 0 END)               AS fiber_only,
-    SUM(CASE WHEN has_fiber = 0 AND has_cable = 1 THEN 1 ELSE 0 END)               AS cable_only,
-    ROUND(SUM(CASE WHEN has_fiber = 0 AND has_cable = 1 THEN 1 ELSE 0 END)
-          * 100.0 / COUNT(*), 1)                                                     AS pct_cable_only,
-    ROUND(SUM(CASE WHEN has_fiber = 1 THEN 1 ELSE 0 END)
-          * 100.0 / COUNT(*), 1)                                                     AS pct_has_fiber
-FROM (
-    SELECT
-        a.location_id,
-        a.block_geoid,
-        CASE WHEN f.location_id IS NOT NULL THEN 1 ELSE 0 END AS has_fiber,
-        CASE WHEN c.location_id IS NOT NULL THEN 1 ELSE 0 END AS has_cable
-    FROM (
-        SELECT location_id, block_geoid FROM fcc_co_fiber
-        UNION
-        SELECT location_id, block_geoid FROM fcc_co_cable
-    ) AS a
-    LEFT JOIN (SELECT DISTINCT location_id FROM fcc_co_fiber) AS f ON a.location_id = f.location_id
-    LEFT JOIN (SELECT DISTINCT location_id FROM fcc_co_cable) AS c ON a.location_id = c.location_id
-) AS competition
-GROUP BY county_fips
-ORDER BY pct_cable_only DESC;
-
-### telco_churn
-```sql
-USE fiber_analytics;
-
-SELECT
-    InternetService,
-    tenure,
-    gender,
-    partner,
-    contract,
-    paymentmethod,
-    churn,
-    COUNT(*)                                                        AS total_customers,
-    SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END)                 AS churned,
-    ROUND(SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END)
-          * 100.0 / COUNT(*), 1)                                    AS churn_rate_pct,
-    ROUND(AVG(tenure), 1)                                           AS avg_tenure_months,
-    ROUND(AVG(MonthlyCharges), 2)                                   AS avg_monthly_charge,
-    ROUND(SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END)
-          * AVG(MonthlyCharges), 0)                                 AS est_monthly_revenue_lost
-FROM telco_churn
-GROUP BY InternetService,
-    tenure,
-    gender,
-    partner,
-    contract,
-    paymentmethod,
-    churn
-ORDER BY churn_rate_pct DESC;
-
-## 📊 Interactive Dashboard
-
-[View Full Tableau Dashboard](https://public.tableau.com/app/profile/kristin.mooney/viz/TableauFiberAnalysis/ColoradosBroadbandOpportunity){: .btn .btn--primary .btn--large}
+All SQL queries used in this project are available on GitHub, organized by dashboard.
+Each file includes the full query and a brief description of its purpose.
 
 [View SQL Queries on GitHub](https://github.com/kjmooney23-web){: .btn .btn--info .btn--large}
