@@ -1,5 +1,5 @@
 ---
-layout: single
+layout: page
 title: "Colorado's Broadband Opportunity"
 subtitle: "Landscape, Competition & Expansion Strategy"
 permalink: /colorado-broadband/
