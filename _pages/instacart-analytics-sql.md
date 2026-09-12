@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "Instacart Analytics — dbt SQL Models"
+title: "Instacart Analytics — SQL Queries"
 subtitle: "Staging, Marts & Analytical Queries"
 permalink: /instacart-analytics-sql/
 author_profile: true
