@@ -2,7 +2,7 @@
 layout: page
 title: "Instacart Analytics — dbt SQL Models"
 subtitle: "Staging, Marts & Analytical Queries"
-permalink: /instacart-analytics-dbt/
+permalink: /instacart-analytics-sql/
 author_profile: true
 toc: true
 toc_label: "SQL Models"
