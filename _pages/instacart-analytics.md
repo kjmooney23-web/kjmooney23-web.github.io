@@ -15,8 +15,6 @@ toc_icon: "chart-bar"
 
 ---
 
-Instacart's core business depends on matching supply to demand — having the right products available, in the right places, for the right customers, at the right time. But without a clear picture of when customers shop, what drives their reorder behavior, and who the most valuable segments are, operational and retention decisions default to intuition rather than evidence.
-
 This project was built to answer three specific questions using the Kaggle Instacart Online Grocery Shopping Dataset: when do customers place orders throughout the day and week, which product departments drive the highest reorder rates, and how do customers segment by loyalty and purchase frequency?
 
 The dataset covers approximately 3.4 million grocery orders from over 200,000 anonymized users across 50,000+ products. dbt was used to build a reproducible SQL transformation pipeline — staging raw CSV files into three analysis-ready mart models — before connecting to Tableau for visualization. A three-dashboard Tableau story was published to communicate the findings as a connected narrative.
@@ -29,11 +27,11 @@ The result is an end-to-end analytics workflow that moves from raw data through 
 
 ---
 
-Instacart's order volume is concentrated in two clear windows: the weekend and the morning. Saturday and Sunday account for 35% of all weekly orders, and the 8am–10am window is the single highest-volume period of the day, peaking at 284,728 orders at 10am. Overnight hours — midnight through 6am — are nearly inactive. These patterns are consistent and actionable: fulfillment staffing and inventory readiness should be built around the Saturday–Sunday morning window as the primary operational priority.
+Instacart's order volume is concentrated in two clear windows: the weekend and the morning. Saturday and Sunday account for 35% of all weekly orders, and the mid morning to early afternoon window is the single highest-volume period of the day, peaking at 284,728 orders at 10am. Overnight hours — midnight through 6am — are nearly inactive. These patterns are consistent and actionable: fulfillment, staffing, and inventory readiness should be built around the Saturday–Sunday morning window as the primary operational priority.
 
 On the product side, the data reveals a meaningful split between volume and loyalty. Produce drives 29% of all orders — nearly three times the next largest department — but it is Dairy & Eggs and Pets that hold the highest reorder rates at 51% and 49% respectively. Customers don't just buy dairy products; they come back for them reliably. This distinction between departments that attract orders and departments that anchor repeat behavior has real implications for inventory investment and marketing strategy.
 
-The customer segmentation analysis surfaces the most commercially significant finding: Loyal customers — those with 16 or more lifetime orders — represent just 19% of the customer base but drive 41% of total order volume. They shop every six days on average and are the engine of Instacart's revenue. At the other end, At-Risk customers make up 30% of the base but contribute only 12% of orders, shopping every 24 days. The gap between these segments — in both frequency and value — defines where retention investment should be focused.
+The customer segmentation analysis surfaces the most significant finding: Loyal customers — those with 16 or more lifetime orders — represent just 19% of the customer base but drive 41% of total order volume. They shop every six days on average and are the engine of Instacart's revenue. At the other end, At-Risk customers make up 30% of the base but contribute only 12% of orders, shopping every 24 days. The gap between these segments — in both frequency and value — defines where retention investment should be focused.
 
 ---
 
@@ -43,11 +41,11 @@ The customer segmentation analysis surfaces the most commercially significant fi
 
 ### Dashboard 1 — When Customers Shop
 
-> **Key Finding:** Order volume is heavily concentrated on weekends and mornings — 35% of weekly orders fall on Saturday and Sunday, and the 8am–10am window is the single busiest period of the day.
+> **Key Finding:** Order volume is heavily concentrated on weekends and mornings — 35% of weekly orders fall on Saturday and Sunday, and the 9am–4pm window is the single busiest period of the day.
 
 A heatmap of order volume by day of week and hour of day shows a clear diagonal pattern: Saturday and Sunday between 9am and 4pm are the densest cells on the grid. The accompanying bar chart confirms that Saturday leads all days at 600,905 orders, followed by Sunday at 587,478 — together representing more than a third of weekly volume. The remaining five weekdays cluster between 426,000 and 467,000 orders, with Monday highest among them.
 
-The hourly line chart tells an equally clear story. Orders are negligible from midnight through 6am, surge rapidly between 7am and 10am, plateau through the early afternoon, and decline steeply after 6pm. The 10am peak at 284,728 orders is the highest single hour across the entire dataset. A linear trend line confirms the morning-weighted demand curve, and the 8am–10am window consistently shows the highest concentration regardless of day of week.
+The hourly line chart tells an equally clear story. Orders are negligible from midnight through 6am, surge rapidly between 7am and 10am, plateau through the early afternoon, and decline steeply after 6pm. The 10am peak at 284,728 orders is the highest single hour across the entire dataset.
 
 ---
 
@@ -76,7 +74,7 @@ A histogram of days between orders shows that most customers shop every 7–17 d
 ---
 
 ### 1. Concentrate Fulfillment Staffing on the Saturday–Sunday Morning Window
-Saturday and Sunday between 8am and noon are the single highest-demand window in the dataset. Fulfillment staffing models should treat this window as the primary operational constraint. Friday evening inventory prep and surge staffing for Saturday morning would directly address the period of peak exposure. Overnight hours can be managed with a lean model.
+Saturday and Sunday between 9am and 4pm are the single highest-demand window in the dataset. Fulfillment staffing models should treat this window as the primary operational constraint. Friday evening inventory prep and staffing for Saturday would directly address the period of peak exposure. Overnight hours can be managed with a lean model.
 
 ---
 
@@ -86,7 +84,7 @@ Dairy & Eggs, Pets, and Bakery customers reorder at rates of 47–51% — and th
 ---
 
 ### 3. Prioritize Produce and Dairy in Inventory Reliability Investment
-Produce accounts for 29% of all orders — a stockout or fulfillment failure in this department affects nearly a third of every cart. Dairy & Eggs combines high volume (5.4M orders) with the highest reorder rate in the dataset. Inventory reliability in these two departments is not a supply chain detail; it is a core retention mechanism.
+Produce accounts for 29% of all orders — a stockout or fulfillment failure in this department affects nearly a third of every cart. Dairy & Eggs combines high volume (5.4M orders) with the highest reorder rate in the dataset. Inventory reliability in these two departments is not a supply chain detail; it is critical to retention.
 
 ---
 
