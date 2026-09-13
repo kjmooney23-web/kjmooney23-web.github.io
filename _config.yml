@@ -1,10 +1,14 @@
 title: "Kristin Mooney"
 description: "Senior Data Analyst portfolio — SQL, Tableau, Power BI"
-url: "https://kjmooney23-web.github.io"
+url: "https://kristin-mooney.github.io"
 
 theme: minima
 
 author: "Kristin Mooney"
+
+header_pages:
+  - _pages/colorado-broadband.md
+  - _pages/instacart-analytics.md
 
 include:
   - _pages
