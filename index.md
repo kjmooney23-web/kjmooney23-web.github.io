@@ -1,18 +1,36 @@
 ---
-layout: home
+layout: page
 title: "Welcome to My Portfolio"
-author_profile: true
 ---
 
-## Featured Project
+Hi, I'm **Kristin Mooney** — a Senior Data Analyst specializing in SQL, Tableau, and Power BI. I build end-to-end analytics projects that turn raw data into clear, actionable insights.
 
-### 🌐 Colorado's Broadband Opportunity
-*Landscape, Competition & Expansion Strategy*
+---
 
-An end-to-end analysis of Colorado's broadband market using FCC Broadband Data (Dec 2025) 
-and the IBM Telco Customer Churn dataset (Kaggle, 2018). Exploring Cable vs. Fiber 
-competition across 2.7M locations, expansion opportunities, and churn risk strategy. 
-Built with SQL & Tableau.
+## Projects
 
-[View Full Project Analysis](/colorado-broadband/){: .btn .btn--primary .btn--large}
-[View Tableau Dashboard](https://public.tableau.com/app/profile/kristin.mooney/viz/TableauFiberAnalysis/ColoradosBroadbandOpportunity){: .btn .btn--info .btn--large}
+<div style="display: flex; gap: 24px; flex-wrap: wrap; margin-top: 16px;">
+
+<div style="flex: 1; min-width: 280px; border: 1px solid #e1e4e8; border-radius: 8px; padding: 24px;">
+  <h3 style="margin-top: 0;">🌐 Colorado's Broadband Opportunity</h3>
+  <p style="color: #666; font-style: italic; margin-top: -8px;">Landscape, Competition & Expansion Strategy</p>
+  <p>End-to-end analysis of Colorado's broadband market using FCC data across 2.7M locations. Maps Cable vs. Fiber competition, identifies expansion targets, and models churn risk.</p>
+  <p><strong>Tools:</strong> SQL · Tableau</p>
+  <a href="/colorado-broadband/" style="display: inline-block; margin-right: 8px; margin-bottom: 8px; padding: 8px 16px; background: #0366d6; color: white; border-radius: 4px; text-decoration: none; font-size: 14px;">View Project →</a>
+  <a href="https://public.tableau.com/app/profile/kristin.mooney/viz/TableauFiberAnalysis/ColoradosBroadbandOpportunity" style="display: inline-block; padding: 8px 16px; background: #f6f8fa; color: #0366d6; border: 1px solid #0366d6; border-radius: 4px; text-decoration: none; font-size: 14px;">View Dashboard →</a>
+</div>
+
+<div style="flex: 1; min-width: 280px; border: 1px solid #e1e4e8; border-radius: 8px; padding: 24px;">
+  <h3 style="margin-top: 0;">🛒 Instacart Shopper Behavior Analysis</h3>
+  <p style="color: #666; font-style: italic; margin-top: -8px;">When, What & Who</p>
+  <p>Analysis of 3.4M grocery orders across 200K+ customers. Uncovers peak demand windows, high-loyalty product categories, and customer segments by purchase frequency.</p>
+  <p><strong>Tools:</strong> dbt · SQL · Tableau</p>
+  <a href="/instacart-analytics/" style="display: inline-block; margin-right: 8px; margin-bottom: 8px; padding: 8px 16px; background: #0366d6; color: white; border-radius: 4px; text-decoration: none; font-size: 14px;">View Project →</a>
+  <a href="https://public.tableau.com/app/profile/kristin.mooney/viz/InstacartAnalyticsProject/UnderstandingInstacartShopperBehavior" style="display: inline-block; padding: 8px 16px; background: #f6f8fa; color: #0366d6; border: 1px solid #0366d6; border-radius: 4px; text-decoration: none; font-size: 14px;">View Dashboard →</a>
+</div>
+
+</div>
+
+---
+
+*More projects coming soon.*
