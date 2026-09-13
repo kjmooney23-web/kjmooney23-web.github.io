@@ -1,13 +1,14 @@
 ---
 layout: page
 title: "Instacart Analytics — SQL Queries"
-subtitle: "Staging, Marts & Analytical Queries"
+subtitle: "Staging, Intermediate, Marts & Analytical Queries"
 permalink: /instacart-analytics-sql/
 author_profile: true
 toc: true
 toc_label: "SQL Models"
 toc_icon: "code"
 ---
+
 
 ---
 
@@ -566,3 +567,4 @@ ORDER BY 1;
 
 [← Back to Project Overview](/instacart-analytics/){: .btn .btn--info .btn--large}
 [View Full Tableau Story](https://public.tableau.com/app/profile/kristin.mooney/viz/InstacartAnalyticsProject/UnderstandingInstacartShopperBehavior){: .btn .btn--primary .btn--large}
+
