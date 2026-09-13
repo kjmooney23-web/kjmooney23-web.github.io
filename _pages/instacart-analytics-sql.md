@@ -265,7 +265,7 @@ GROUP BY 1,2,3,4,5,6,7,8,9;
 
 ## 5. Mart Models
 
-Mart models are the business-ready, aggregated tables that feed directly into Tableau. Each mart answers a specific business question.
+Mart models are the business-ready, aggregated tables that feed directly into Tableau. Three marts power the final dashboards.
 
 ---
 
@@ -281,14 +281,14 @@ SELECT
     p.department_name,
     p.aisle_name,
     p.is_organic,
-    COUNT(DISTINCT fi.order_id)                             AS total_orders,
-    COUNT(DISTINCT fi.user_id)                              AS unique_buyers,
-    SUM(fi.reordered)                                       AS reorder_count,
+    COUNT(DISTINCT fi.order_id)                              AS total_orders,
+    COUNT(DISTINCT fi.user_id)                               AS unique_buyers,
+    SUM(fi.reordered)                                        AS reorder_count,
     ROUND(100.0 * SUM(fi.reordered)
-        / NULLIF(COUNT(fi.order_id), 0), 2)                AS reorder_rate_pct,
-    ROUND(AVG(fi.add_to_cart_order), 2)                    AS avg_cart_position,
-    RANK() OVER (ORDER BY COUNT(DISTINCT fi.order_id) DESC) AS popularity_rank,
-    RANK() OVER (ORDER BY SUM(fi.reordered) DESC)          AS reorder_rank
+        / NULLIF(COUNT(fi.order_id), 0), 2)                 AS reorder_rate_pct,
+    ROUND(AVG(fi.add_to_cart_order), 2)                     AS avg_cart_position,
+    RANK() OVER (ORDER BY COUNT(DISTINCT fi.order_id) DESC)  AS popularity_rank,
+    RANK() OVER (ORDER BY SUM(fi.reordered) DESC)           AS reorder_rank
 FROM fct_order_items fi
 JOIN dim_products p ON fi.product_id = p.product_id
 GROUP BY 1,2,3,4,5;
@@ -296,82 +296,36 @@ GROUP BY 1,2,3,4,5;
 
 ---
 
-### mart_department_performance
+### mart_timing_analysis
 
-Category-level volume, reorder rate, and organic mix. Feeds the department bar chart in Dashboard 2.
-
-```sql
-CREATE OR REPLACE TABLE mart_department_performance AS
-SELECT
-    d.department_id,
-    d.department                                            AS department_name,
-    COUNT(DISTINCT fi.order_id)                            AS total_orders,
-    COUNT(DISTINCT fi.product_id)                          AS products_sold,
-    COUNT(DISTINCT fi.user_id)                             AS unique_buyers,
-    SUM(fi.reordered)                                      AS reorder_count,
-    ROUND(100.0 * SUM(fi.reordered)
-        / NULLIF(COUNT(*), 0), 2)                          AS reorder_rate_pct,
-    ROUND(100.0 * SUM(CASE WHEN p.is_organic THEN 1 ELSE 0 END)
-        / NULLIF(COUNT(*), 0), 2)                          AS organic_pct,
-    ROUND(COUNT(*) * 1.0
-        / NULLIF(COUNT(DISTINCT fi.order_id), 0), 2)       AS avg_items_per_order
-FROM fct_order_items fi
-JOIN dim_products p ON fi.product_id   = p.product_id
-JOIN departments  d ON p.department_id = d.department_id
-GROUP BY 1,2;
-```
-
----
-
-### mart_order_timing_heatmap
-
-Hour × day grid for peak demand analysis. Feeds the heatmap and hourly line chart in Dashboard 1 — When Customers Shop.
+Hour × day aggregation for peak demand analysis. Feeds the heatmap, hourly line chart, and time-of-day breakdowns in Dashboard 1 — When Customers Shop.
 
 ```sql
-CREATE OR REPLACE TABLE mart_order_timing_heatmap AS
+CREATE OR REPLACE TABLE mart_timing_analysis AS
 SELECT
     order_day_name,
     order_dow,
     order_hour_of_day,
-    COUNT(order_id)             AS order_count,
-    ROUND(AVG(basket_size), 2)  AS avg_basket_size,
-    ROUND(AVG(reorder_pct), 2)  AS avg_reorder_pct
+    time_of_day_bucket,
+    reorder_cycle_bucket,
+    COUNT(order_id)                        AS order_count,
+    COUNT(DISTINCT user_id)                AS unique_shoppers,
+    ROUND(AVG(basket_size), 2)             AS avg_basket_size,
+    ROUND(AVG(reorder_pct), 2)             AS avg_reorder_pct,
+    SUM(basket_size)                       AS total_items_ordered
 FROM fct_orders
-GROUP BY 1,2,3
+GROUP BY 1,2,3,4,5
 ORDER BY order_dow, order_hour_of_day;
 ```
 
 ---
 
-### mart_shopper_behavior
+### mart_user_rfm
 
-Order cadence, basket size, and time-of-day patterns grouped by shopper segment. Feeds Dashboard 3 — Shopper Loyalty.
-
-```sql
-CREATE OR REPLACE TABLE mart_shopper_behavior AS
-SELECT
-    u.shopper_segment,
-    COUNT(DISTINCT fo.user_id)                  AS user_count,
-    ROUND(AVG(fo.basket_size), 2)               AS avg_basket_size,
-    ROUND(AVG(fo.reorder_pct), 2)               AS avg_reorder_pct,
-    ROUND(AVG(u.avg_days_between_orders), 2)    AS avg_days_between_orders,
-    ROUND(AVG(u.total_orders), 2)               AS avg_lifetime_orders,
-    MODE() WITHIN GROUP (ORDER BY fo.order_day_name)    AS top_order_day,
-    MODE() WITHIN GROUP (ORDER BY fo.time_of_day_bucket) AS top_time_bucket
-FROM fct_orders fo
-JOIN dim_users u ON fo.user_id = u.user_id
-GROUP BY 1
-ORDER BY avg_lifetime_orders DESC;
-```
-
----
-
-### mart_rfm_segmentation
-
-Full RFM (Recency × Frequency × Monetary) scoring using NTILE quintiles. Assigns each customer to a named segment — Champions, Loyal Customers, At Risk, etc.
+User-level RFM (Recency × Frequency × Monetary) scoring using NTILE quintiles. One row per user with their score and named segment. Feeds Dashboard 3 — Shopper Loyalty.
 
 ```sql
-CREATE OR REPLACE TABLE mart_rfm_segmentation AS
+CREATE OR REPLACE TABLE mart_user_rfm AS
 WITH rfm_raw AS (
     SELECT
         user_id,
@@ -390,51 +344,26 @@ rfm_scored AS (
         NTILE(5) OVER (ORDER BY frequency ASC)              AS f_score,
         NTILE(5) OVER (ORDER BY monetary_proxy ASC)         AS m_score
     FROM rfm_raw
-),
-rfm_labeled AS (
-    SELECT *,
-        r_score + f_score + m_score AS rfm_total,
-        CASE
-            WHEN r_score >= 4 AND f_score >= 4 THEN 'Champions'
-            WHEN r_score >= 4 AND f_score >= 2 THEN 'Loyal Customers'
-            WHEN r_score >= 3 AND f_score >= 1 THEN 'Potential Loyalists'
-            WHEN r_score >= 4 AND f_score = 1  THEN 'Recent Customers'
-            WHEN r_score <= 2 AND f_score >= 4 THEN 'At Risk'
-            WHEN r_score <= 2 AND f_score >= 2 THEN 'Need Attention'
-            WHEN r_score = 1  AND f_score = 1  THEN 'Lost'
-            ELSE 'Hibernating'
-        END AS rfm_segment
-    FROM rfm_scored
 )
 SELECT
-    rfm_segment,
-    COUNT(user_id)                 AS user_count,
-    ROUND(AVG(frequency), 1)       AS avg_orders,
-    ROUND(AVG(avg_basket_size), 2) AS avg_basket_size,
-    ROUND(AVG(rfm_total), 2)       AS avg_rfm_score
-FROM rfm_labeled
-GROUP BY rfm_segment
-ORDER BY avg_rfm_score DESC;
-```
-
----
-
-### mart_reorder_cohort
-
-Tracks how reorder rate and basket size evolve as a customer places more orders — capped at 30 to keep it readable.
-
-```sql
-CREATE OR REPLACE TABLE mart_reorder_cohort AS
-SELECT
-    order_number                          AS order_sequence,
-    COUNT(DISTINCT order_id)              AS orders_at_sequence,
-    ROUND(AVG(basket_size), 2)            AS avg_basket_size,
-    ROUND(AVG(reorder_pct), 2)            AS avg_reorder_pct,
-    ROUND(AVG(days_since_prior_order), 2) AS avg_days_since_prior
-FROM fct_orders
-WHERE order_number <= 30
-GROUP BY 1
-ORDER BY 1;
+    user_id,
+    frequency,
+    avg_basket_size,
+    r_score,
+    f_score,
+    m_score,
+    r_score + f_score + m_score AS rfm_total,
+    CASE
+        WHEN r_score >= 4 AND f_score >= 4 THEN 'Champions'
+        WHEN r_score >= 4 AND f_score >= 2 THEN 'Loyal Customers'
+        WHEN r_score >= 3 AND f_score >= 1 THEN 'Potential Loyalists'
+        WHEN r_score >= 4 AND f_score = 1  THEN 'Recent Customers'
+        WHEN r_score <= 2 AND f_score >= 4 THEN 'At Risk'
+        WHEN r_score <= 2 AND f_score >= 2 THEN 'Need Attention'
+        WHEN r_score = 1  AND f_score = 1  THEN 'Lost'
+        ELSE 'Hibernating'
+    END AS rfm_segment
+FROM rfm_scored;
 ```
 
 ---
@@ -451,9 +380,9 @@ Dashboard-ready queries built directly on top of the mart models.
 SELECT
     order_day_name,
     order_dow,
-    COUNT(*)                    AS orders,
-    ROUND(AVG(basket_size), 2)  AS avg_basket
-FROM fct_orders
+    COUNT(order_count)          AS total_orders,
+    ROUND(AVG(avg_basket_size), 2) AS avg_basket
+FROM mart_timing_analysis
 GROUP BY 1,2
 ORDER BY order_dow;
 ```
@@ -465,16 +394,30 @@ ORDER BY order_dow;
 ```sql
 SELECT
     order_hour_of_day,
-    COUNT(*)                    AS orders,
-    ROUND(AVG(basket_size), 2)  AS avg_basket
-FROM fct_orders
+    SUM(order_count)               AS total_orders,
+    ROUND(AVG(avg_basket_size), 2) AS avg_basket
+FROM mart_timing_analysis
 GROUP BY 1
 ORDER BY 1;
 ```
 
 ---
 
-### Q3 — Top 20 Most-Ordered Products
+### Q3 — Peak Hour × Day Heatmap
+
+```sql
+SELECT
+    order_day_name,
+    order_hour_of_day,
+    SUM(order_count) AS total_orders
+FROM mart_timing_analysis
+GROUP BY 1,2
+ORDER BY order_dow, order_hour_of_day;
+```
+
+---
+
+### Q4 — Top 20 Most-Ordered Products
 
 ```sql
 SELECT
@@ -490,7 +433,7 @@ LIMIT 20;
 
 ---
 
-### Q4 — Top 20 Products by Reorder Loyalty
+### Q5 — Top 20 Products by Reorder Loyalty
 
 ```sql
 SELECT
@@ -507,60 +450,36 @@ LIMIT 20;
 
 ---
 
-### Q5 — Department Performance Overview
-
-```sql
-SELECT
-    department_name,
-    total_orders,
-    unique_buyers,
-    reorder_rate_pct,
-    organic_pct
-FROM mart_department_performance
-ORDER BY total_orders DESC;
-```
-
----
-
-### Q6 — Shopper Segment Distribution
-
-```sql
-SELECT
-    shopper_segment,
-    user_count,
-    avg_basket_size,
-    avg_reorder_pct,
-    avg_days_between_orders
-FROM mart_shopper_behavior;
-```
-
----
-
-### Q7 — RFM Segment Summary
+### Q6 — RFM Segment Summary
 
 ```sql
 SELECT
     rfm_segment,
-    user_count,
-    avg_orders,
-    avg_basket_size,
-    avg_rfm_score
-FROM mart_rfm_segmentation
+    COUNT(user_id)                 AS user_count,
+    ROUND(AVG(frequency), 1)       AS avg_orders,
+    ROUND(AVG(avg_basket_size), 2) AS avg_basket_size,
+    ROUND(AVG(rfm_total), 2)       AS avg_rfm_score
+FROM mart_user_rfm
+GROUP BY rfm_segment
 ORDER BY avg_rfm_score DESC;
 ```
 
 ---
 
-### Q8 — Loyalty Curve (Reorder Rate by Order Sequence)
+### Q7 — User-Level RFM Scores
 
 ```sql
 SELECT
-    order_sequence,
-    avg_reorder_pct,
-    avg_basket_size,
-    avg_days_since_prior
-FROM mart_reorder_cohort
-ORDER BY 1;
+    user_id,
+    rfm_segment,
+    r_score,
+    f_score,
+    m_score,
+    rfm_total,
+    frequency,
+    avg_basket_size
+FROM mart_user_rfm
+ORDER BY rfm_total DESC;
 ```
 
 ---
