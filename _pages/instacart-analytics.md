@@ -212,4 +212,5 @@ This project draws on one primary data source: the Kaggle Instacart Online Groce
 
 All SQL transformations are built in dbt following a staging → marts architecture. Staging models clean and standardize raw source tables; mart models aggregate into analysis-ready outputs.
 
-[View dbt Models →](/instacart-analytics-sql/){: .btn .btn--info .btn--large}
+[View SQL Queries →](/instacart-analytics-sql/){: .btn .btn--info .btn--large}
+
